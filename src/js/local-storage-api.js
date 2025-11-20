@@ -1,15 +1,7 @@
-import { TASKS_LS_KEY } from "./config";
-
-export function loadLS() {
-  const data = JSON.parse(localStorage.getItem(TASKS_LS_KEY)) ?? [];
-
-  return data;
+export function loadLS(key) {
+  return JSON.parse(localStorage.getItem(key));
 }
 
-export function saveLS(tasks) {
-  localStorage.setItem(TASKS_LS_KEY, JSON.stringify(tasks));
+export function saveLS(key, tasks) {
+  localStorage.setItem(key, JSON.stringify(tasks));
 }
-
-// export function removeLS(task) {
-
-// }
