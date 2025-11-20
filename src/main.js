@@ -14,18 +14,33 @@
       <p>Текст</p>
   </li>
 */
-import { tasksForm, tasksList } from "./js/refs";
+import { tasksForm, tasksList, toggleBtn } from "./js/refs";
 import { createTask } from "./js/tasks";
 import { loadLS, saveLS } from "./js/local-storage-api";
-import { renderTask, initRender } from "./js/render-tasks";
+import { initRender } from "./js/render-tasks";
+import { setupTheme, setTheme, getSystemTheme } from "./js/theme-switcher";
+import { TASKS_LS_KEY, THEME_LS_KEY } from "./js/config";
 
-const app = { tasks: loadLS() };
+const app = { tasks: loadLS(TASKS_LS_KEY) ?? [] };
 
 initRender(app.tasks, tasksList);
 
+setupTheme();
+
+toggleBtn.addEventListener("click", (e) => {
+  let theme;
+
+  const currentTheme = loadLS(THEME_LS_KEY) ?? getSystemTheme();
+
+  theme = currentTheme === "dark" ? "light" : "dark";
+
+  saveLS(THEME_LS_KEY, theme);
+  setTheme(theme);
+});
+
 tasksForm.addEventListener("submit", (event) => {
   createTask(event, app.tasks);
-  saveLS(app.tasks);
+  saveLS(TASKS_LS_KEY, app.tasks);
 });
 
 function deleteListItem(e) {
@@ -38,7 +53,7 @@ function deleteListItem(e) {
 
   app.tasks = app.tasks.filter((obj) => obj.id !== id);
 
-  saveLS(app.tasks);
+  saveLS(TASKS_LS_KEY, app.tasks);
   initRender(app.tasks, tasksList);
 }
 
